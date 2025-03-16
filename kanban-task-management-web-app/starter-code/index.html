@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  
+  <title>Kanban task management web app</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- Background blur overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  
+
+
+  <!-- These are all the UI components -->
+  <div style="display: none;" class="add-board-container">
+    <h3 style="color: white; font-weight: bold; margin-bottom: 1rem;">Add New Board</h3>
+
+    <div class="new-board-name-container">
+      <label style="color: white; margin-bottom: 0.3rem;" for="NewBoardName">Board Name</label>
+      <input class="boardName" style="color: white;" type="text" name="NewBoardName" id="NewBoardName" required>
+    </div>
+
+    <div style="margin-bottom: 1rem;" class="new-board-columns-container">
+      <p style="color: white; margin-bottom: 0.3rem;">Board Columns</p>
+      <div class="new-board-column-container">
+        
+        <!-- <div class="new-board-input">
+          <input class="column-name" style="color: white; width: 80%;" type="text" required>
+          <img style="margin-left: 0.4rem;" class="delete-new-board-column-input" src="./assets/icon-cross.svg">
+        </div> -->
+
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; flex-direction: column;">
+      <button class="add-container-add-new-column-button">+ Add New Column</button>
+      <button class="add-container-save-button">Create Board</button>
+    </div>
+  </div>
+
+  <div style="display: none;" class="edit-board-container">
+    <h3 style="color: white; font-weight: bold; margin-bottom: 1rem;">Edit Board</h3>
+
+    <div class="new-board-name-container">
+      <label style="color: white; margin-bottom: 0.3rem;" for="NewBoardName">Board Name</label>
+      <input class="editBoardName" style="color: white;" type="text" name="NewBoardName" id="NewBoardName" required>
+    </div>
+
+    <div style="margin-bottom: 1rem;" class="new-board-columns-container">
+      <p style="color: white; margin-bottom: 0.3rem;">Board Columns</p>
+      <div class="edit-board-column-container">
+        
+        <!-- <div class="new-board-input">
+          <input class="column-name" style="color: white; width: 80%;" type="text" required>
+          <img style="margin-left: 0.4rem;" class="delete-new-board-column-input" src="./assets/icon-cross.svg">
+        </div> -->
+
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; flex-direction: column;">
+      <button class="edit-container-add-new-column-button">+ Add New Column</button>
+      <button class="edit-container-save-button">Save</button>
+    </div>
+  </div>
+
+
+  <div style="display: none;" class="add-new-task-container-pop-up">
+    <h3 class="add-new-task-text">Add New Task</h3>
+
+    <div class="task-title-container">
+      <label style="color: white; font-weight: bold; margin-bottom: 0.4rem;" for="Title">Title</label>
+      <input class="title-input" type="text" name="Title" id="Title" placeholder="e.g. Take coffee break" required>
+    </div>
+
+    <div class="task-description-container">
+      <label style="color: white; font-weight: bold; margin-bottom: 0.4rem;" for="Description">Description</label>
+      <textarea name="Description" id="Description" placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little." required></textarea>
+    </div>
+
+    <div class="task-subtasks-container">
+      <p style="color: white; font-weight: bold; margin-bottom: 0.4rem;">Subtasks</p>
+
+      <div class="subtasks-container">
+        <div class="subtask-container">
+          <input class="subtask-input" type="text" placeholder="e.g. Make coffee">
+          <img style="margin-left: 0.4rem;" class="delete-subtask-input" src="./assets/icon-cross.svg">
+        </div>
+
+        <div class="subtask-container">
+          <input class="subtask-input" type="text" placeholder="e.g. Drink coffee & smile">
+          <img style="margin-left: 0.4rem;" class="delete-subtask-input" src="./assets/icon-cross.svg">
+        </div>
+      </div>
+
+      <button class="add-new-subtask-button">+ Add New Subtask</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column;" class="task-status-container">
+      <label style="color: white; font-weight: bold;" for="Status-choices">Status</label>
+      <select id="Status-choices" name="Status-choices">
+        <!-- <option value="default" selected>---</option> -->
+      </select>
+    </div>
+
+    <button style="width: 100%;" class="task-create-task-button">Create Task</button>
+
+  </div>
+
+
+  <!-- edit task container pop up, similar to add new task container -->
+  <div style="display: none;" class="edit-new-task-container-pop-up">
+    <h3 class="add-new-task-text">Edit Task</h3>
+
+    <div class="task-title-container">
+      <label style="color: white; font-weight: bold; margin-bottom: 0.4rem;" for="Title">Title</label>
+      <input class="title-input" type="text" name="Title" id="editTaskTitle">
+    </div>
+
+    <div class="task-description-container">
+      <label style="color: white; font-weight: bold; margin-bottom: 0.4rem;" for="Description">Description</label>
+      <textarea name="Description" id="editDescription"></textarea>
+    </div>
+
+    <div class="task-subtasks-container">
+      <p style="color: white; font-weight: bold; margin-bottom: 0.4rem;">Subtasks</p>
+
+      <div class="edit-task-subtasks-container">
+        <!-- <div class="edit-subtask-container">
+          <input class="edit-subtask-input" type="text" placeholder="e.g. Make coffee">
+          <img style="margin-left: 0.4rem;" class="delete-subtask-input" src="./assets/icon-cross.svg">
+        </div>
+
+        <div class="edit-subtask-container">
+          <input class="edit-subtask-input" type="text" placeholder="e.g. Drink coffee & smile">
+          <img style="margin-left: 0.4rem;" class="delete-subtask-input" src="./assets/icon-cross.svg">
+        </div> -->
+      </div>
+
+      <button class="add-new-subtask-button-edit">+ Add New Subtask</button>
+    </div>
+
+    <button style="width: 100%;" class="edit-task-button-save">Save Changes</button>
+
+  </div>
+
+
+
+  <div style="display: none;" class="added-task-container">
+    <div class="added-task-header">
+      <h3>Finish project</h3>
+      <img src="./assets/icon-vertical-ellipsis.svg">
+    </div>
+
+    <p style="color: grey; font-size: 0.8rem; margin-bottom: 1rem;">Finish the damn project lazy fat pig sinner bald ass mf</p>
+
+    <div class="added-task-subtasks-container">
+      <p style="color: white; font-weight: bold; margin-bottom: 0.8rem;">Subtasks (0 of 2)</p>
+
+      <div class="fuck-this-shit-container">
+        <div class="subtask-whatever-name-container">
+          <input type="checkbox" name="subtask" id="subtask">
+          <p style="margin-left: 0.5rem;">make coffee</p>
+        </div>
+        <div class="subtask-whatever-name-container">
+          <input type="checkbox" name="subtask" id="subtask">
+          <p style="margin-left: 0.5rem;">drink coffee</p>
+        </div>
+      </div>
+
+      <div class="added-task-current-status-container">
+        <label style="margin-bottom: 0.5rem; color: white;" for="CurrentStatus">Current Status</label>
+        <select name="CurrentStatus" id="CurrentStatus">
+          <option>TODO</option>
+          <option>DOING</option>
+          <option>DONE</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: none;" class="edit-board-delete-board-container">
+    <button style="width: 100%;" class="edit-board-button">Edit Board</button>
+    <button style="width: 100%;" class="delete-board-button">Delete Board</button>
+  </div>
+
+  <!-- <div style="display: none;" class="edit-board-container">
+    <h3 style="color: white; font-weight: bold; margin-bottom: 1rem;">Edit Board</h3>
+
+    <div class="board-name-container">
+      <label style="color: white; margin-bottom: 0.3rem;" for="BoardName">Board Name</label>
+      <input style="color: white;" type="text" name="BoardName" id="BoardName" required>
+    </div>
+
+    <div style="margin-bottom: 1rem;" class="board-columns-container">
+      <p style="color: white; margin-bottom: 0.3rem;">Board Columns</p>
+      <div class="board-column-container">
+        <input style="color: white; width: 80%;" type="text" required>
+        <img style="margin-left: 0.4rem;" class="delete-board-column-input" src="./assets/icon-cross.svg" >
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; flex-direction: column;">
+      <button class="edit-container-add-new-column-button">+ Add New Column</button>
+      <button class="edit-container-save-changes-button">Save</button>
+    </div>
+  </div> -->
+
+  <div style="display: none;" class="delete-board-confirmation-container">
+    <h3 style="color: red; font-weight: bold; margin-bottom: 1rem;">Delete this Board?</h3>
+    <p style="color: grey; margin-bottom: 1.5rem; font-size: 0.9rem;">Are you sure you want to delete the "Platform Launch"board? 
+      This action will remove all columns and tasks and can not be reverse.</p>
+    <div style="display: flex;">
+      <button class="delete-board-yes-button">Yes</button>
+      <button class="delete-board-no-button">Cancel</button>
+    </div>
+  </div>
+
+
+  <div class="sidebar">
+    <div class="offDoamne1">
+    <div class="sidebar-inner-container">
+      <p style="margin-bottom: 1rem;" class="all-boards-text">
+        ALL BOARDS (<span class="boards-count">0</span>)
+      </p>
+
+      <div class="boards-container">
+        <!-- <div class="sidebar-board-container active-board">
+          <img style="filter: brightness(0) invert(1);" src="./assets/icon-board.svg">
+          <div style="margin-left: 0.8rem;" class="sidebar-board-title active-board-text">Platform Launch</div>
+        </div> -->
+      </div>
+
+
+      <div class="create-new-board-container">
+        <img src="./assets/icon-board.svg">
+        <div class="create-new-board">
+          + Create New Board
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="offDoamne2" style="margin-bottom: 2rem;">
+      <div class="theme-switcher-container">
+        <img src="./assets/icon-light-theme.svg">
+         <!-- iOS Style Toggle Switch -->
+        <label class="switch">
+          <input type="checkbox">
+          <span class="slider"></span>
+      </label>
+      <img src="./assets/icon-dark-theme.svg">
+      </div>
+  
+      <div class="hide-sidebar-container">
+        <img src="./assets/icon-hide-sidebar.svg">
+        <p class="hide-sidebar-text">Hide Sidebar</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: none;" class="open-sidebar">
+    <img src="./assets/icon-show-sidebar.svg">
+  </div>
+
+
+  <div style="display: none;" class="task-view">
+    <div style="display: none;" class="edit-task-delete-task-container">
+      <button class="edit-task-button">Edit Task</button>
+      <button class="delete-task-button">Delete Task</button>
+    </div>
+
+    <div class="task-view-header">
+      <div class="task-top">
+        <h3 class="task-title">Build UI</h3>
+        <div class="task-edit-delete-button">
+          <img src="./assets/icon-vertical-ellipsis.svg">
+        </div>
+      </div>
+      <div class="task-bottom">
+        <p style="color: grey;" class="task-description">Finish the project lazy mf.</p>
+      </div>
+    </div>
+
+    <div class="task-subtasks-container">
+      <p style="font-size: 0.91rem; margin-bottom: 1rem;">Subtasks (<span class="task-view-left-subtask-count">0</span> of <span class="total-subtask-count">0</span>)</p>
+
+      <div class="subtasks-container-task">
+        <!-- <div class="task-input-container"> 
+          <input type="checkbox" name="sub-completed" id="sub-completed">
+          <p style="margin-left: 0.5rem;" class="subtask-name">Also finish this subtask</p>
+        </div>
+
+        <div class="task-input-container"> 
+          <input type="checkbox" name="sub-completed" id="sub-completed">
+          <p style="margin-left: 0.5rem;" class="subtask-name">Also finish this subtask</p>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="task-current-status-container">
+      <p style="margin-bottom: 0.5rem;">Current Status</p>
+      <select name="task-status" id="task-status">
+        <option value="todo">todo</option>
+        <option value="doing">doing</option>
+      </select>
+    </div>
+  </div>
+<!-- END OF COMPONENTS -->
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar">
+  <div class="coca" style="display: flex; align-items: center; justify-content: center;">
+    <img class="logo-light logo" src="./assets/logo-light.svg">
+    <h1 style="margin-left: 5rem; text-align: center;" class="board-navbar-title">
+      
+    </h1>
+  </div>
+
+  <div class="add-new-task-container">
+    <button class="add-new-task">+ Add New Task</button>
+    <img style="margin-left: 0.7rem;" class="three-dots-reset-button" src="./assets/icon-vertical-ellipsis.svg">
+  </div>
+</nav>
+
+
+  <div class="main">
+    <div class="tasks-container">
+
+      <div class="main-tasks-container">
+        
+        <!-- <div class="task-container">
+          <div class="task-header">
+            <div class="circle"></div>
+            <p class="task-header-text">TODO (<span class="tasks-count">4</span>)</p>
+          </div>
+
+          <div class="dynamic-tasks-container">
+            <div class="task-card">
+              <h2 class="task-title">Build UI for onboarding flow</h2>
+              <p class="subtasks-count-container"><span class="left-subtask-count">0</span> of <span class="right-subtask-todo-count">3</span> subtasks</p>
+            </div>
+            <div class="task-card">
+              <h2 class="task-title">Build UI for onboarding flow</h2>
+              <p class="subtasks-count-container"><span class="left-subtask-count">0</span> of <span class="right-subtask-todo-count">3</span> subtasks</p>
+            </div>
+            <div class="task-card">
+              <h2 class="task-title">Build UI for onboarding flow</h2>
+              <p class="subtasks-count-container"><span class="left-subtask-count">0</span> of <span class="right-subtask-todo-count">3</span> subtasks</p>
+            </div>
+            <div class="task-card">
+              <h2 class="task-title">Build UI for onboarding flow</h2>
+              <p class="subtasks-count-container"><span class="left-subtask-count">0</span> of <span class="right-subtask-todo-count">3</span> subtasks</p>
+            </div>
+            <div class="task-card">
+              <h2 class="task-title">Build UI for onboarding flow</h2>
+              <p class="subtasks-count-container"><span class="left-subtask-count">0</span> of <span class="right-subtask-todo-count">3</span> subtasks</p>
+            </div>
+
+          </div>
+        </div> -->
+
+      </div>
+
+
+    
+
+      <div class="new-column">
+        <p class="new-column-text">+ New Column</p>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
